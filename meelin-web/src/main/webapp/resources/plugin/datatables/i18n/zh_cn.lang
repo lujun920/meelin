@@ -1,0 +1,15 @@
+{
+	"lengthMenu": "每页显示 _MENU_条",
+	"zeroRecords": "没有找到符合条件的数据",
+	"processing": "正在加载...",
+	"info": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+	"infoEmpty": "没有数据",
+	"infoFiltered": "(从 _MAX_ 条记录中过滤)",
+	"search": "搜索：",
+	"paginate": {
+		"first": "首页",
+		"previous": "前一页",
+		"next": "后一页",
+		"last": "尾页"
+	}
+}

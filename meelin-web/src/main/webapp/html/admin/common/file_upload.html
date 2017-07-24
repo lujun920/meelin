@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="<@s.root />/resources/plugin/uploadify/uploadify.css" />
+<script src="<@s.root />/resources/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="<@s.root />/resources/plugin/uploadify/jquery.uploadify.min.js"></script>
+<script src="<@s.root />/resources/plugin/layer/layer.js"></script>
+</head>
+<body>
+	<form method="post" id="category_form" action="<@s.root />/file/upload" enctype="multipart/form-data">
+		<input type="file" id="uploadFile" name="uploadFile" class="abutton" />
+		<a href="javascript:$('#uploadFile').uploadify('upload','*');" class="abutton">上 传</a> 
+		<a href="javascript:$('#file_upload').uploadify('stop');" class="abutton">取消上传</a>
+		<br/>
+		<table border="1" style="border-collapse:collapse;" class="bordered">
+			<thead>
+				<tr>
+					<th>文件</th>
+					<th>大小</th>
+					<th>创建时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="attachments"></tbody>
+		</table>
+		<div id="uploadFileQueue"></div>
+    </form>
+	<script type="text/javascript">
+		// 上传文件数组
+		var idsArray = new Array();
+		// 上传附件
+		$(function() {
+			// 参数异常
+			var uploadify_onSelectError = function(file, errorCode, errorMsg) {
+				var msgText = '';
+				switch (errorCode) {
+					case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
+						msgText += "每次上传最多允许 "+ this.settings.queueSizeLimit +"张图片.";
+						break;
+					case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+						msgText += "上传图片大小不得超过" + this.settings.fileSizeLimit + ".";
+						break;
+					case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+						msgText += "文件大小为0";
+						break;
+					case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+						msgText += "上传图片格式仅限 " + this.settings.fileTypeExts + ".";
+						break;
+					default:
+						msgText += "错误代码：" + errorCode + "\n" + errorMsg + ".";
+				}
+				layer.alert(msgText, '0');
+		};
+		
+		var uploadify_onSelect = function(){return '';};
+		var uploadify_onUploadError = function(file, errorCode, errorMsg, errorString) {
+	        // 手工取消不弹出提示
+	        if (errorCode == SWFUpload.UPLOAD_ERROR.FILE_CANCELLED || errorCode == SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED) {
+	            return;
+	        }
+	        var msgText = "";
+	        switch (errorCode) {
+	            case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
+	                msgText += "HTTP 错误\n" + errorMsg;
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.MISSING_UPLOAD_URL:
+	                msgText += "上传图片丢失，请重新上传";
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.IO_ERROR:
+	                msgText += "网络发送IO错误，请检查网络是否正常";
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
+	                msgText += "安全性错误\n" + errorMsg;
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+	                msgText += "每次最多上传 " + this.settings.uploadLimit + "个";
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
+	                msgText += errorMsg;
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.SPECIFIED_FILE_ID_NOT_FOUND:
+	                msgText += "找不到指定图片路径，请重新操作";
+	                break;
+	            case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
+	                msgText += "参数错误";
+	                break;
+	            default:
+	                msgText += "文件:" + file.name + "\n错误码:" + errorCode + "\n" + errorMsg + "\n" + errorString;
+	        }
+	        layer.alert(msgText, '0');
+		}
+		// 上传初始化 
+		$("#uploadFile").uploadify({
+			'debug'    	: false,
+			'method'    : 'post',
+			'file_post_name':'uploadFile',
+			'buttonText' : '选择文件',
+			'width' 	: '80',
+			'height' 	: '25',
+			'auto'		: false,
+			'cancelImg'	: '<@s.root />/resources/plugin/uploadify/cancel.png',
+			'swf'		: '<@s.root />/resources/plugin/uploadify/uploadify.swf',
+			'uploader'	: '<@s.root />/file/upload',
+			'overrideEvents' : [ 'onDialogClose', 'onUploadSuccess', 'onUploadError', 'onSelectError'],
+			'onSelect' : uploadify_onSelect,
+			'onSelectError' : uploadify_onSelectError,
+			'onUploadError' : uploadify_onUploadError,
+			'queueID'  	: 'uploadFileQueue',
+			'onUploadStart' : function(file) {},
+			'onUploadSuccess' : function(file, json, response) {
+				// $(".bordered").show();
+				var data = eval("("+json+")"); 
+				var attachment="";
+				attachment += "<tr id="+data.fileId+"><td><a href='<@s.root />/upload/"+data.fileName+"'>"+data.fileName+"</a></td>";
+				attachment += "<td align='right'>"+ data.fileSize +"</td>";
+				attachment += "<td>"+ data.fileUploadTime +"</td>";
+				attachment += "<td><a href=javascript:onDelete('"+data.fileId+"');>删除</a></td></tr>";
+				$("#attachments").append(attachment);
+				
+				// 存储集合数组 
+				idsArray.push(data.fileId);
+			}	
+		});
+	});
+	
+	// 查找指定的元素在数组中的位置
+	Array.prototype.indexOf = function(val) {
+		for (var i = 0; i < this.length; i++) {
+			if (this[i] == val) return i;
+		}
+		return -1;
+	};
+	
+	// 数组指定元素移除 
+	Array.prototype.remove = function(val) {
+		var index = this.indexOf(val);
+		if (index > -1) {
+			this.splice(index, 1);
+		}
+	};
+		
+	// 删除附件
+	function onDelete(id) {
+		var ly = layer.confirm('您确定要删除该文件吗？', {
+			btn: ['确定','取消']
+		}, function(){
+			$.ajax({
+				type : "POST",
+				url : "<@s.root />/file/del?t=" + new Date().getTime(),
+				data : "id="+id,
+				success :function(data) {
+					if (data.state == true) {
+						// 必须有json返回才会执行
+						$("#"+id).remove();
+						
+						// 数组中移除 
+						idsArray.remove(id);
+						if (idsArray.length == 0) {
+							// $(".bordered").hide();
+						}
+						layer.closeAll('dialog');
+					} else {
+						layer.msg(data.msg);
+					}
+				}
+			});
+		}, function(){
+			layer.closeAll('dialog');
+		});
+	}
+	</script>
+</body>

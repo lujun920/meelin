@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <parent>
+    <artifactId>meelin-parent</artifactId>
+    <groupId>me.gacl</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>meelin-service</artifactId>
+  <packaging>jar</packaging>
+  <name>meelin-service</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+		<!--meelin-service需要使用到meelin-dao中的类，所以需要添加对meelin-dao模块的依赖-->
+		<dependency>
+			<groupId>me.gacl</groupId>
+			<artifactId>meelin-dao</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>

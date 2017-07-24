@@ -1,0 +1,27 @@
+<aside>
+	<div id="sidebar" class="nav-collapse ">
+		<!-- sidebar menu start-->
+		<ul class="sidebar-menu" id="nav-accordion">
+			<li>
+				<a class="active" href="<@s.root />/admin/index">
+					<i class="icon-dashboard"></i>
+					<span>首页</span>
+				</a>
+			</li>
+		 	<#list USER_SESSION_TOKEN.menu.children as m>
+				<li class="sub-menu">
+					<a href="javascript:;">
+						<i class="icon-laptop"></i>
+						<span>${m.name}</span>
+					</a>
+					<ul class="sub">
+						<#list m.children as mc>
+							<li><a href="<@s.root />${mc.uri!}">${mc.name}</a></li>
+						</#list>
+					</ul>
+				</li>
+			</#list>
+		</ul>
+		<!-- sidebar menu end-->
+	</div>
+</aside>

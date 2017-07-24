@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<title>用户管理</title>
+<script src="<@s.root />/html/admin/common/user_list.js?v=<@s.sdate />"></script>
+</head>
+<body>
+	<section id="container">
+		<!--main content start-->
+		<section id="main-content">
+			<section class="wrapper">
+				<div class="row">
+					<div class="col-lg-12">
+						<!-- table start -->
+							<section class="panel">
+								<header class="panel-heading">
+									用户列表<input type="hidden" id="rspId" name="rspId" value="1">
+									<div id= "btns" class='form-inline'>
+									<div class="form-group">
+									<@ui.button key= "USER_ADD" id= "addUser" text= "新增"/>
+									<a type="button" id= "editUser" class="btn btn-primary btn-sm">修改</a>
+									<a type="button" id= "enabledUser" class="btn btn-primary btn-sm">启用</a>
+									<a type="button" id= "disabledUser" class="btn btn-primary btn-sm">禁用</a>
+									<a type="button" id= "authorityUser" class="btn btn-primary btn-sm">角色分配</a>
+									</div>
+									<form class='form-group' role="form">
+                                  		<div class="form-group">
+                                      		<label class="sr-only" for="userNameSearch">username</label>
+                                      		<input type="text" class="form-control" id="userNameSearch" placeholder="Search username">
+                                  		</div>
+                                  		<div class="form-group">
+                                      		<label class="sr-only" for="userStatus">userStatus</label>
+                                      		<input type="text" class="form-control" id="userStatus" placeholder="search status">
+                                  		</div>
+                                  		<button type="button" class="btn btn-success" id='comboSerachBtn'>Search</button>
+                              		</form>
+								</div>
+								
+								</header>
+								<div class="panel-body">
+									<div class="adv-table">
+										<table class="display table table-bordered table-striped" id="listTable">
+											<thead>
+												<tr>
+													<th width="1%"><input type="checkbox" id='checkedAll' /></th>
+													<th width="20%">用户名</th>
+													<th width="19%" style="text-align: center;">状态</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+											
+										</table>
+									</div>
+								</div>
+							</section>
+						<!-- table end -->
+					</div>
+				</div>
+		
+			</section>
+		</section>
+		<!--main content end-->
+		<#include "/admin/common/slider.html"/>
+	</section>
+	<!-- <ui.msg/> -->
+	<SCRIPT type="text/javascript">
+		<!--
+		
+		//-->
+	</SCRIPT>
+</body>
+</html>

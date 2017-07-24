@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meelin.core.dao.mapper.ISLoggerMapper">
+	<resultMap id="fieldMapper" type="SLogger">
+		<id property="logId" column="logId" /><!--  -->
+		<result property="logOs" column="logOs" /><!--  -->
+		<result property="logBrowser" column="logBrowser" /><!--  -->
+		<result property="logBrowserVersion" column="logBrowserVersion" /><!--  -->
+		<result property="logIp" column="logIp" /><!--  -->
+		<result property="logOperateType" column="logOperateType" /><!--  -->
+		<result property="logContext" column="logContext" /><!--  -->
+		<result property="logTime" column="logTime" /><!--  -->
+		<result property="logOperator" column="logOperator" /><!--  -->
+		<result property="logUrl" column="logUrl" /><!--  -->
+	</resultMap>
+
+	<sql id="fieldAsProperty">
+		LOG_ID AS logId,
+		LOG_OS AS logOs,
+		LOG_BROWSER AS logBrowser,
+		LOG_BROWSER_VERSION AS logBrowserVersion,
+		LOG_IP AS logIp,
+		LOG_OPERATE_TYPE AS logOperateType,
+		LOG_CONTEXT AS logContext,
+		LOG_TIME AS logTime,
+		LOG_OPERATOR AS logOperator,
+		LOG_URL AS logUrl
+	</sql>
+
+	<sql id="field">
+		<if test="logId!=null" >LOG_ID,</if>
+		LOG_OS,
+		LOG_BROWSER,
+		LOG_BROWSER_VERSION,
+		LOG_IP,
+		LOG_OPERATE_TYPE,
+		LOG_CONTEXT,
+		LOG_TIME,
+		LOG_OPERATOR,
+		LOG_URL
+	</sql>
+
+	<sql id="property">
+		<if test="logId!=null" >#{logId,jdbcType=VARCHAR},</if>
+		#{logOs,jdbcType=VARCHAR},
+		#{logBrowser,jdbcType=VARCHAR},
+		#{logBrowserVersion,jdbcType=VARCHAR},
+		#{logIp,jdbcType=VARCHAR},
+		#{logOperateType,jdbcType=VARCHAR},
+		#{logContext,jdbcType=VARCHAR},
+		#{logTime,jdbcType=TIMESTAMP},
+		#{logOperator,jdbcType=VARCHAR},
+		#{logUrl,jdbcType=VARCHAR}
+	</sql>
+
+	<sql id="fieldEqProperty">
+		LOG_OS=#{logOs,jdbcType=VARCHAR},
+		LOG_BROWSER=#{logBrowser,jdbcType=VARCHAR},
+		LOG_BROWSER_VERSION=#{logBrowserVersion,jdbcType=VARCHAR},
+		LOG_IP=#{logIp,jdbcType=VARCHAR},
+		LOG_OPERATE_TYPE=#{logOperateType,jdbcType=VARCHAR},
+		LOG_CONTEXT=#{logContext,jdbcType=VARCHAR},
+		LOG_TIME=#{logTime,jdbcType=TIMESTAMP},
+		LOG_OPERATOR=#{logOperator,jdbcType=VARCHAR},
+		LOG_URL=#{logUrl,jdbcType=VARCHAR}
+	</sql>
+
+	<sql id="fieldEqPropertyIf">
+		<if test="logOs!=null" >LOG_OS=#{logOs,jdbcType=VARCHAR},</if>
+		<if test="logBrowser!=null" >LOG_BROWSER=#{logBrowser,jdbcType=VARCHAR},</if>
+		<if test="logBrowserVersion!=null" >LOG_BROWSER_VERSION=#{logBrowserVersion,jdbcType=VARCHAR},</if>
+		<if test="logIp!=null" >LOG_IP=#{logIp,jdbcType=VARCHAR},</if>
+		<if test="logOperateType!=null" >LOG_OPERATE_TYPE=#{logOperateType,jdbcType=VARCHAR},</if>
+		<if test="logContext!=null" >LOG_CONTEXT=#{logContext,jdbcType=VARCHAR},</if>
+		<if test="logTime!=null" >LOG_TIME=#{logTime,jdbcType=TIMESTAMP},</if>
+		<if test="logOperator!=null" >LOG_OPERATOR=#{logOperator,jdbcType=VARCHAR},</if>
+		<if test="logUrl!=null" >LOG_URL=#{logUrl,jdbcType=VARCHAR}</if>
+	</sql>
+
+	<insert id="save" parameterType="SLogger">
+		INSERT INTO S_LOGGER(<include refid="field" />) VALUES (<include refid="property" />)
+	</insert>
+	<delete id="remove" parameterType="SLogger">
+		DELETE FROM S_LOGGER<include refid="idCnd" />
+	</delete>
+	<select id="get" resultType="SLogger" parameterType="SLogger">
+		SELECT<include refid="fieldAsProperty" />FROM S_LOGGER<include refid="idCnd" />
+	</select>
+	<update id="update" parameterType="SLogger">
+		UPDATE S_LOGGER<set><include refid="fieldEqPropertyIf" /></set><include refid="idCnd" />
+	</update>
+	<update id="forceUpdate" parameterType="SLogger">
+		UPDATE S_LOGGER<set><include refid="fieldEqProperty" /></set><include refid="idCnd" />
+	</update>
+	<!-- ==================以上为单记录操作,以下为多记录操作================== -->
+	<delete id="removeSome" parameterType="SLogger">
+		DELETE FROM S_LOGGER<where>${condition}</where>
+	</delete>
+	<update id="updateSome" parameterType="SLogger">
+		UPDATE S_LOGGER<set>${updateSet}</set><where>${condition}</where>
+	</update>
+	<select id="selectMapList" resultType="map" parameterType="SLogger">
+		SELECT<include refid="fieldAsProperty" />FROM S_LOGGER<where>${condition}</where>
+	</select>
+	<select id="selectModelList" resultType="SLogger" parameterType="SLogger">
+		SELECT<include refid="fieldAsProperty" />FROM S_LOGGER<where>${condition}</where>
+	</select>
+	
+	<sql id="idCnd">
+		<where>
+			<if test="logId!=null" >LOG_ID=#{logId,jdbcType=VARCHAR}</if>
+			<if test="logId==null" >AND 1=0</if>
+		</where>
+	</sql>
+	<!-- ==================定制内容开始================== -->
+	
+	<!-- ==================定制内容结束================== -->
+</mapper>

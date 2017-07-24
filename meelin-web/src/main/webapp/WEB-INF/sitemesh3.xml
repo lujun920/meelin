@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+  	<!-- 对不同的路径，启用不同的装饰器 -->
+  	<mapping path="/admin/**" decorator="/admin/index"/>
+  	<!-- 过滤装饰器 -->
+  	<mapping path="/admin/login" exclue="true"/>
+  	<mapping path="/admin/index" exclue="true"/>
+  	<mapping path="/admin/role/authority" exclue="true"/>
+  	<mapping path="/resources/**" exclue="true"/>
+	<mapping path="/403" exclue="true"/>
+</sitemesh>

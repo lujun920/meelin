@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meelin.core.dao.mapper.ISRoleResourceMapper">
+	<resultMap id="fieldMapper" type="SRoleResource">
+		<id property="id" column="id" /><!--ID-->
+		<result property="roleId" column="roleId" /><!--角色ID-->
+		<result property="rsId" column="rsId" /><!--资源ID-->
+	</resultMap>
+
+	<sql id="fieldAsProperty">
+		ID AS id,
+		ROLE_ID AS roleId,
+		RS_ID AS rsId
+	</sql>
+
+	<sql id="field">
+		<if test="id!=null" >ID,</if>
+		ROLE_ID,
+		RS_ID
+	</sql>
+
+	<sql id="property">
+		<if test="id!=null" >#{id,jdbcType=INTEGER},</if>
+		#{roleId,jdbcType=INTEGER},
+		#{rsId,jdbcType=INTEGER}
+	</sql>
+
+	<sql id="fieldEqProperty">
+		ROLE_ID=#{roleId,jdbcType=INTEGER},
+		RS_ID=#{rsId,jdbcType=INTEGER}
+	</sql>
+
+	<sql id="fieldEqPropertyIf">
+		<if test="roleId!=null" >ROLE_ID=#{roleId,jdbcType=INTEGER},</if>
+		<if test="rsId!=null" >RS_ID=#{rsId,jdbcType=INTEGER}</if>
+	</sql>
+
+	<insert id="saveRoleResource" parameterType="SRoleResource">
+		INSERT INTO S_ROLE_RESOURCE(<include refid="field" />) VALUES (<include refid="property" />)
+	</insert>
+	<delete id="removeRoleResource" parameterType="SRoleResource">
+		DELETE FROM S_ROLE_RESOURCE<include refid="idCnd" />
+	</delete>
+	<select id="getRoleResource" resultType="SRoleResource" parameterType="SRoleResource">
+		SELECT<include refid="fieldAsProperty" />FROM S_ROLE_RESOURCE<include refid="idCnd" />
+	</select>
+	<update id="updateRoleResource" parameterType="SRoleResource">
+		UPDATE S_ROLE_RESOURCE<set><include refid="fieldEqPropertyIf" /></set><include refid="idCnd" />
+	</update>
+	<update id="forceUpdateRoleResource" parameterType="SRoleResource">
+		UPDATE S_ROLE_RESOURCE<set><include refid="fieldEqProperty" /></set><include refid="idCnd" />
+	</update>
+	<!-- ==================以上为单记录操作,以下为多记录操作================== -->
+	<delete id="removeSomeRoleResource" parameterType="SRoleResource">
+		DELETE FROM S_ROLE_RESOURCE<where>${condition}</where>
+	</delete>
+	<update id="updateSomeRoleResource" parameterType="SRoleResource">
+		UPDATE S_ROLE_RESOURCE<set>${updateSet}</set><where>${condition}</where>
+	</update>
+	<select id="selectMapList" resultType="map" parameterType="SRoleResource">
+		SELECT<include refid="fieldAsProperty" />FROM S_ROLE_RESOURCE<where>${condition}</where>
+	</select>
+	<select id="selectModelList" resultType="SRoleResource" parameterType="SRoleResource">
+		SELECT<include refid="fieldAsProperty" />FROM S_ROLE_RESOURCE<where>${condition}</where>
+	</select>
+	
+	<sql id="idCnd">
+		<where>
+			<if test="id!=null" >ID=#{id,jdbcType=INTEGER}</if>
+			<if test="id==null" >AND 1=0</if>
+		</where>
+	</sql>
+	<!-- ==================定制内容开始================== -->
+	<insert id="saveBatchRoleResource">
+        insert into S_ROLE_RESOURCE (ROLE_ID, RS_ID)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+	        (#{item.roleId,jdbcType=INTEGER}, #{item.rsId,jdbcType=INTEGER})
+	    </foreach>
+    </insert>
+	<!-- ==================定制内容结束================== -->
+</mapper>

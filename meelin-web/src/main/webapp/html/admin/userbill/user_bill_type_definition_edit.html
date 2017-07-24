@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<title>交易类型</title>
+	<link rel="stylesheet" href="<@s.root />/resources/plugin/kindeditor-4.1.10/themes/default/default.css" />
+	<script charset="utf-8" src="<@s.root />/resources/plugin/kindeditor-4.1.10/kindeditor-min.js"></script>
+	<script charset="utf-8" src="<@s.root />/resources/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+	<script src="<@s.root />/html/admin/userbill/user_bill_type_definition_edit.js?v=<@s.sdate />"></script>
+</head>
+<body>
+	<section id="container">
+		<!--main content start-->
+		<section id="main-content" class="">
+			<section class="wrapper">
+				<section class="form-content">
+					<div class="row">
+						<div class="col-lg-12">
+							<section class="panel">
+								<div class="panel-body progress-panel">
+									<div class="task-progress">
+										<h1><#if ubtype.id??><i class="icon-edit"></i> 编辑<#else><i class="icon-plus-sign-alt"></i> 新增</#if></h1>
+									</div>
+									<div class="task-option">
+									</div>
+								</div>
+								<div class="panel-body">
+									<form id="subForm" method="post" class="form-horizontal tasi-form">
+										<input type="hidden" name="token" value="${token}">
+										<div class="form-group">
+											<label class="col-sm-1 control-label">父字典名称</label>
+											<div class="col-sm-5">
+												<input type="hidden" id="parentId" name="parentId" class="form-control" value="${pubtype.id!}">
+												<input type="text" id="parentNodeName" name="parentNodeName" readonly="readonly" class="form-control" value="${pubtype.title!}" autocomplete="off" placeholder="请输入字典名称" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-1 control-label center-block">字典名称</label>
+											<div class="col-sm-5">
+												<input type="hidden" id="id" name="id" class="form-control" value="${ubtype.id!}">
+												<input type="text" id="title" name="title" class="form-control" value="${ubtype.title!}" autocomplete="off" placeholder="请输入字典名称" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-1 control-label center-block">字典编号</label>
+											<div class="col-sm-5">
+												<#if ubtype.code??>
+												<input type="text" id="code" name="code" class="form-control" readonly="readonly" value="${ubtype.code!}">
+												<#else>
+												<input type="text" id="code" name="code" class="form-control"  value="${ubtype.code!}" autocomplete="off" placeholder="请输入字典名称" />
+												</#if>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-1 control-label">字典配图</label>
+											<div class="col-sm-5">
+												<div class="row">
+												  <div class="col-md-9">
+												  	<input type="text" id="icon" name="icon" class="form-control pull-left" value="${ubtype.icon!}" autocomplete="off" placeholder="请选择配图" />
+												  </div>
+												  <div class="col-md-3 pull-left">
+												  	<a class="btn btn-primary" href="#"><i class="icon-plus"></i>&nbsp;&nbsp;选择配图</a>
+												  </div>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-1 col-sm-2 control-label">数据模板</label>
+											<div class="col-sm-5">
+												<textarea id="description" name="description"  placeholder="请填写数据模板(可不填)">${ubtype.description!}</textarea>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-1 control-label">是否启用</label>
+											<div class="col-sm-2">
+												<select class="form-control m-bot15 selectpicker" data-style="btn btn-default" name="enabled">
+													<#if ubtype.enabled == '1'>
+													<option value="1" selected="selected">启用</option>
+													<#else>
+													<option value="1" >启用</option>
+													</#if>
+													<#if ubtype.enabled == '0'>
+													<option value="0" selected="selected">禁用</option>
+													<#else>
+													<option value="0">禁用</option>
+													</#if>
+												</select>
+											</div>
+											
+											<label class="col-sm-1 control-label">是否父节点</label>
+											<div class="col-sm-2">
+												<select class="form-control m-bot15 selectpicker" data-style="btn btn-default" name="isParent">
+													<#if ubtype.isParent == '1'>
+													<option value="1"  selected="selected">是</option>
+													<#else>
+													<option value="1">是</option>
+													</#if>
+													<#if ubtype.isParent == '0'>
+													<option value="0" selected="selected">否</option>
+													<#else>
+													<option value="0">否</option>
+													</#if>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-lg-offset-2 col-lg-10">
+												<button class="btn btn-success" type="submit" id="submitForm"><i class="icon-save"></i>&nbsp;&nbsp;保存</button>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<button class="btn btn-danger" type="button" id="goBack"><i class="icon-reply"></i>&nbsp;&nbsp;返回</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</section>
+						</div>
+					</div>
+				</section>
+			</section>
+		</section>
+		<!--main content end-->
+	</section>
+</body>
+</html>

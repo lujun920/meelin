@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meelin.core.dao.mapper.ISResourceMapper">
+	<resultMap id="fieldMapper" type="SResource">
+		<id property="rsId" column="rsId" /><!--  -->
+		<result property="rspId" column="rspId" /><!--  -->
+		<result property="reKey" column="reKey" /><!--  -->
+		<result property="permitsKey" column="permitsKey" /><!--  -->
+		<result property="name" column="name" /><!--  -->
+		<result property="uri" column="uri" /><!--  -->
+		<result property="type" column="type" /><!--  -->
+		<result property="sort" column="sort" /><!--  -->
+		<result property="enabled" column="enabled" /><!--  -->
+
+	</resultMap>
+
+	<sql id="fieldAsProperty">
+		RS_ID AS rsId,
+		RS_KEY AS rsKey,
+		PERMITS_KEY AS permitsKey,
+		RSP_ID AS rspId,
+		NAME AS name,
+		URI AS uri,
+		TYPE AS type,
+		SORT AS sort,
+		ENABLED AS enabled
+	</sql>
+
+	<sql id="field">
+		<if test="rsId!=null" >RS_ID,</if>
+		RSP_ID,
+		RS_KEY,
+		PERMITS_KEY,
+		NAME,
+		URI,
+		TYPE,
+		SORT,
+		ENABLED
+	</sql>
+
+	<sql id="property">
+		<if test="rsId!=null" >#{rsId,jdbcType=INTEGER},</if>
+		#{rsKey,jdbcType=VARCHAR},
+		#{permitsKey,jdbcType=VARCHAR},
+		#{rspId,jdbcType=INTEGER},
+		#{name,jdbcType=VARCHAR},
+		#{uri,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},
+		#{sort,jdbcType=INTEGER},
+		#{enabled,jdbcType=TINYINT}
+	</sql>
+
+	<sql id="fieldEqProperty">
+		RSP_ID=#{rspId,jdbcType=INTEGER},
+		RS_KEY=#{rsKey,jdbcType=VARCHAR},
+		PERMITS_KEY=#{permitsKey,jdbcType=VARCHAR},
+		NAME=#{name,jdbcType=VARCHAR},
+		URI=#{uri,jdbcType=VARCHAR},
+		TYPE=#{type,jdbcType=VARCHAR},
+		SORT=#{sort,jdbcType=INTEGER},
+		ENABLED=#{enabled,jdbcType=TINYINT}
+	</sql>
+
+	<sql id="fieldEqPropertyIf">
+		<if test="rspId!=null" >RSP_ID=#{rspId,jdbcType=INTEGER},</if>
+		<if test="rsKey!=null" >RS_KEY=#{rsKey,jdbcType=VARCHAR},</if>
+		<if test="permitsKey!=null" >PERMITS_KEY=#{permitsKey,jdbcType=VARCHAR},</if>
+		<if test="name!=null" >NAME=#{name,jdbcType=VARCHAR},</if>
+		<if test="uri!=null" >URI=#{uri,jdbcType=VARCHAR},</if>
+		<if test="type!=null" >TYPE=#{type,jdbcType=VARCHAR},</if>
+		<if test="sort!=null" >SORT=#{sort,jdbcType=INTEGER},</if>
+		<if test="enabled!=null" >ENABLED=#{enabled,jdbcType=TINYINT}</if>
+	</sql>
+
+	<insert id="save" parameterType="SResource">
+		INSERT INTO S_RESOURCE(<include refid="field" />) VALUES (<include refid="property" />)
+	</insert>
+	<delete id="remove" parameterType="SResource">
+		DELETE FROM S_RESOURCE<include refid="idCnd" />
+	</delete>
+	<select id="get" resultType="SResource" parameterType="SResource">
+		SELECT<include refid="fieldAsProperty" />FROM S_RESOURCE<include refid="idCnd" />
+	</select>
+	<update id="update" parameterType="SResource">
+		UPDATE S_RESOURCE<set><include refid="fieldEqPropertyIf" /></set><include refid="idCnd" />
+	</update>
+	<update id="forceUpdate" parameterType="SResource">
+		UPDATE S_RESOURCE<set><include refid="fieldEqProperty" /></set><include refid="idCnd" />
+	</update>
+	<!-- ==================以上为单记录操作,以下为多记录操作================== -->
+	<delete id="removeSome" parameterType="SResource">
+		DELETE FROM S_RESOURCE<where>${condition}</where>
+	</delete>
+	<update id="updateSome" parameterType="SResource">
+		UPDATE S_RESOURCE<set>${updateSet}</set><where>${condition}</where>
+	</update>
+	<select id="selectMapList" resultType="map" parameterType="SResource">
+		SELECT<include refid="fieldAsProperty" />FROM S_RESOURCE<where>${condition}</where>
+	</select>
+	<select id="selectModelList" resultType="SResource" parameterType="SResource">
+		SELECT<include refid="fieldAsProperty" />FROM S_RESOURCE<where>${condition}</where>
+	</select>
+	
+	<sql id="idCnd">
+		<where>
+			<if test="rsId!=null" >RS_ID=#{rsId,jdbcType=INTEGER}</if>
+			<if test="rsId==null" >AND 1=0</if>
+		</where>
+	</sql>
+
+
+	<!-- ==================定制内容开始================== -->
+	<select id="selectResUserMap" resultType="map" parameterType="string">
+		SELECT rre.RS_ID AS rsId, RSP_ID AS rspId, RS_KEY AS rsKey, re.NAME AS name,
+		URI AS uri, TYPE AS type, SORT AS sort, re.ENABLED AS enabled, r.ROLE_ID AS roleId
+		FROM S_RESOURCE re LEFT JOIN S_ROLE_RESOURCE rre ON re.RS_ID= rre.RS_ID
+		left join S_ROLE r on r.ROLE_ID= rre.ROLE_ID
+		left join S_USER_ROLE ur on ur.ROLE_ID= r.ROLE_ID <where>${condition}</where> GROUP BY rre.RS_ID
+	</select>
+	<!-- 根据用户Id获取该用户的权限-->
+	<select id="selectUserResources" parameterType="String" resultType="map">
+		SELECT
+		<include refid="fieldAsProperty" />
+		FROM S_RESOURCE WHERE RS_ID in(
+		SELECT rr.RS_ID FROM S_ROLE_RESOURCE rr WHERE rr.ROLE_ID in(
+		SELECT ur.ROLE_ID FROM S_USER_ROLE ur <where>${condition}</where>))
+	</select>
+
+	<select id="selectResRoleMap" resultType="map" parameterType="string">
+		SELECT rre.RS_ID AS rsId, RSP_ID AS rspId, RS_KEY AS rsKey, NAME AS name, URI AS uri, TYPE AS type, SORT AS sort, ENABLED AS enabled, ROLE_ID AS roleId
+		FROM S_RESOURCE re LEFT JOIN S_ROLE_RESOURCE rre ON re.RS_ID= rre.RS_ID<where>${condition}</where>
+	</select>
+	<!-- ==================定制内容结束================== -->
+</mapper>

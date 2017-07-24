@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meelin.core.dao.mapper.ISUserRoleMapper">
+	<resultMap id="fieldMapper" type="SUserRole">
+		<id property="id" column="id" /><!--ID-->
+		<result property="userId" column="userId" /><!--用户ID-->
+		<result property="roleId" column="roleId" /><!--角色ID-->
+	</resultMap>
+
+	<sql id="fieldAsProperty">
+		ID AS id,
+		USER_ID AS userId,
+		ROLE_ID AS roleId
+	</sql>
+
+	<sql id="field">
+		<if test="id!=null" >ID,</if>
+		USER_ID,
+		ROLE_ID
+	</sql>
+
+	<sql id="property">
+		<if test="id!=null" >#{id,jdbcType=INTEGER},</if>
+		#{userId,jdbcType=INTEGER},
+		#{roleId,jdbcType=INTEGER}
+	</sql>
+
+	<sql id="fieldEqProperty">
+		USER_ID=#{userId,jdbcType=INTEGER},
+		ROLE_ID=#{roleId,jdbcType=INTEGER}
+	</sql>
+
+	<sql id="fieldEqPropertyIf">
+		<if test="userId!=null" >USER_ID=#{userId,jdbcType=INTEGER},</if>
+		<if test="roleId!=null" >ROLE_ID=#{roleId,jdbcType=INTEGER}</if>
+	</sql>
+
+	<insert id="saveUserRole" parameterType="SUserRole">
+		INSERT INTO S_USER_ROLE(<include refid="field" />) VALUES (<include refid="property" />)
+	</insert>
+	<delete id="removeUserRole" parameterType="SUserRole">
+		DELETE FROM S_USER_ROLE<include refid="idCnd" />
+	</delete>
+	<select id="getUserRole" resultType="SUserRole" parameterType="SUserRole">
+		SELECT<include refid="fieldAsProperty" />FROM S_USER_ROLE<include refid="idCnd" />
+	</select>
+	<update id="updateUserRole" parameterType="SUserRole">
+		UPDATE S_USER_ROLE<set><include refid="fieldEqPropertyIf" /></set><include refid="idCnd" />
+	</update>
+	<update id="forceUpdateUserRole" parameterType="SUserRole">
+		UPDATE S_USER_ROLE<set><include refid="fieldEqProperty" /></set><include refid="idCnd" />
+	</update>
+	<!-- ==================以上为单记录操作,以下为多记录操作================== -->
+	<delete id="removeSomeUserRole" parameterType="SUserRole">
+		DELETE FROM S_USER_ROLE<where>${condition}</where>
+	</delete>
+	<update id="updateSomeUserRole" parameterType="SUserRole">
+		UPDATE S_USER_ROLE<set>${updateSet}</set><where>${condition}</where>
+	</update>
+	<select id="selectMapList" resultType="map" parameterType="SUserRole">
+		SELECT<include refid="fieldAsProperty" />FROM S_USER_ROLE<where>${condition}</where>
+	</select>
+	<select id="selectModelList" resultType="SUserRole" parameterType="SUserRole">
+		SELECT<include refid="fieldAsProperty" />FROM S_USER_ROLE<where>${condition}</where>
+	</select>
+	
+	<sql id="idCnd">
+		<where>
+			<if test="id!=null" >ID=#{id,jdbcType=INTEGER}</if>
+			<if test="id==null" >AND 1=0</if>
+		</where>
+	</sql>
+	<!-- ==================定制内容开始================== -->
+	
+	<!-- ==================定制内容结束================== -->
+</mapper>

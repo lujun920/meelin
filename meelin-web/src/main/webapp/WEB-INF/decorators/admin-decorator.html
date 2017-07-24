@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="imagetoolbar" content="no"/>
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="Cache-Control" content="no-cache" />
+	<meta http-equiv="expires" content="0" />
+	<title><sitemesh:write property="title" /></title>
+	<!-- Bootstrap core CSS -->
+	<link rel="icon" href="<@s.root />/resources/img/favicon.ico" type="image/x-icon" />
+	
+	<link href="<@s.root />/resources/css/bootstrap.css" rel="stylesheet"/>
+	<link href="<@s.root />/resources/css/bootstrap-reset.css" rel="stylesheet"/>
+	<link href="<@s.root />/resources/css/bootstrap-select.css" rel="stylesheet"/>
+	<!--external css-->
+	<link href="<@s.root />/resources/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<!-- Custom styles for this template -->
+	<link href="<@s.root />/resources/css/style.css?v=<@s.sdate />" rel="stylesheet"/>
+	<link href="<@s.root />/resources/css/style-responsive.css?v=<@s.sdate />" rel="stylesheet" />
+	<!-- table page -->
+	<link href="<@s.root />/resources/plugin/datatables/css/jquery.dataTables.css" rel="stylesheet" />
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+	<!--[if lt IE 9]>
+	  <script src="<@s.root />/resources/js/html5shiv.js"></script>
+	  <script src="<@s.root />/resources/js/respond.min.js"></script>
+	<![endif]-->
+	<input  type="hidden" id="root"  name="root" value= "<@s.root />"/>
+	<script src="<@s.root />/resources/js/jquery-1.11.2.min.js"></script>
+	<script src="<@s.root />/resources/js/bootstrap.min.js"></script>
+	<script src="<@s.root />/resources/js/bootstrap-select.js"></script>
+	<script src="<@s.root />/resources/js/jquery.dcjqaccordion.2.7.js"></script>
+	<script src="<@s.root />/resources/js/jquery.scrollTo.min.js"></script>
+	<script src="<@s.root />/resources/js/jquery.nicescroll.js"></script>
+	<script src="<@s.root />/resources/js/respond.min.js"></script>
+	<!-- table page -->
+	<script src="<@s.root />/resources/plugin/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="<@s.root />/resources/js/dataTablesInit.js?v=<@s.sdate />"></script>
+	<!-- js cookie -->
+	<script src="<@s.root />/resources/js/jquery.cookie.js"></script>
+	<!--resources script for all pages-->
+	<script src="<@s.root />/resources/js/common-scripts.js"></script>
+	<!-- layer -->
+	<script src="<@s.root />/resources/plugin/layer/layer.js"></script>
+	<script src="<@s.root />/resources/plugin/layer/extend/layer.ext.js"></script>
+	<!-- jquery.validate -->
+	<script src="<@s.root />/resources/js/jquery.validate.js"></script>
+	<script src="<@s.root />/resources/js/jquery.validate.messages_zh.js"></script>
+	<script src="<@s.root />/resources/js/jquery.form.js"></script>
+	<sitemesh:write property="head"/>
+</head>
+<body>
+	<#include "/include/head.html"/>
+	<#include "/include/left.html"/>
+	<sitemesh:write property="body"/>
+	<#include "/include/footer.html"/>
+</body>
+</html>

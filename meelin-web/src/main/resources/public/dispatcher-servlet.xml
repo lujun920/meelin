@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context-4.2.xsd ">
+
+	<!-- 扩充了注解驱动，可以将请求参数绑定到控制器参数 -->
+	<mvc:annotation-driven />
+
+	<!-- 启用Spring基于annotation的DI,激活 @Required @Autowired, @PostConstruct, @PreDestroy and @SResource 等标注 -->
+	<context:annotation-config />
+
+	<!-- DispatcherServlet上下文， 只管理@Controller类型的bean， 忽略其他型的bean, 如@Service -->
+	<context:component-scan base-package="com.meelin">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<!-- Spring容器优先加载由ServletContextListener（对应applicationContext.xml）产生的父容器，而
+		SpringMVC（对应dispatcher_servlet.xml）产生的是子容器。子容器Controller进行扫描装配时装配的@Service注解
+		的实例是没有经过事务加强处理，即没有事务处理能力的Service，而父容器进行初始化的Service是保证事务的增强处理
+		能力的。如果不在子容器中将Service exclude掉，此时得到的将是原样的无事务处理能力的Service。 -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+	
+	<!-- 静态资源处理， css， js， imgs -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/html/**" location="/html/" />
+	
+	<!-- 配置freeMarker的模板路径 -->
+    <bean id="freemarkerConfig"  class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+    	<property name="configLocation" value="classpath:freemarker.properties" />
+        <property name="templateLoaderPaths">
+        	<list>
+        		<value>/html/</value>
+        		<value>/WEB-INF/decorators/</value>
+        	</list>
+        </property>
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape" value-ref="fmXmlEscape"/>
+				<!--
+				<entry key= "testDirective" value-ref="testDirective"/>
+				<entry key="contractInfo">
+					<bean class="com.p2p.core.tags.ContractInfoModel"/>
+				</entry>
+				-->
+			</map>
+		</property>
+    </bean>
+    
+	<!-- 解析视图返回对应的视图模板 -->
+    <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
+	
+	<!-- 配置freeMarker视图解析器 -->
+    <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="viewClass" value=" org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="cache" value="true"/>
+		<property name="suffix" value=".html" />
+        <property name="exposeRequestAttributes" value="true" />
+        <property name="exposeSessionAttributes" value="true" />
+        <property name="exposeSpringMacroHelpers" value="false" />
+        <property name="allowRequestOverride" value="true" />
+        <property name="allowSessionOverride" value="true"/>
+        <!-- 把contextPath暴露给freemaker，前端可以通过${base.getContextPath()} 来获取上下文路径  -->
+        <property name="requestContextAttribute" value="base" />
+    </bean>
+    
+    
+    <!-- 防止重复提交拦截器 -->
+   	<mvc:interceptors>
+     	<mvc:interceptor>
+         <mvc:mapping path= "/**" />
+         <bean class= "com.meelin.core.base.intercept.AvoidDuplicateSubmissionInterceptor" />
+     	</mvc:interceptor>
+     </mvc:interceptors>
+     
+   	<!-- 上传文件拦截，设置最大上传文件大小   10M=10*1024*1024(B)=10485760 bytes -->  
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+		<property name="maxUploadSize" value="10485760" />  
+	</bean>
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!-- AOP式方法级权限检查,开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"/>
+	</bean>
+	<!--
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">
+					/403
+				</prop>
+				<prop key="org.apache.shiro.authz.UnauthenticatedException">
+					/403
+				</prop>
+			</props>
+		</property>
+	</bean>
+	-->
+</beans>

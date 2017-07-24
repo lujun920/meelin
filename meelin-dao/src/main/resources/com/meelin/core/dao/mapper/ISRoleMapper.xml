@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meelin.core.dao.mapper.ISRoleMapper">
+	<resultMap id="fieldMapper" type="SRole">
+		<id property="roleId" column="roleId" /><!--  -->
+		<result property="name" column="name" /><!--  -->
+		<result property="enabled" column="enabled" /><!--  -->
+		<result property="description" column="description" /><!--  -->
+	</resultMap>
+
+	<sql id="fieldAsProperty">
+		ROLE_ID AS roleId,
+		NAME AS name,
+		ENABLED AS enabled,
+		DESCRIPTION AS description
+	</sql>
+
+	<sql id="field">
+		<if test="roleId!=null" >ROLE_ID,</if>
+		NAME,
+		ENABLED,
+		DESCRIPTION
+	</sql>
+
+	<sql id="property">
+		<if test="roleId!=null" >#{roleId,jdbcType=INTEGER},</if>
+		#{name,jdbcType=VARCHAR},
+		#{enabled,jdbcType=TINYINT},
+		#{description,jdbcType=VARCHAR}
+	</sql>
+
+	<sql id="fieldEqProperty">
+		NAME=#{name,jdbcType=VARCHAR},
+		ENABLED=#{enabled,jdbcType=TINYINT},
+		DESCRIPTION=#{description,jdbcType=VARCHAR}
+	</sql>
+
+	<sql id="fieldEqPropertyIf">
+		<if test="name!=null" >NAME=#{name,jdbcType=VARCHAR},</if>
+		<if test="enabled!=null" >ENABLED=#{enabled,jdbcType=TINYINT},</if>
+		<if test="description!=null" >DESCRIPTION=#{description,jdbcType=VARCHAR}</if>
+	</sql>
+
+	<insert id="save" parameterType="SRole">
+		INSERT INTO S_ROLE(<include refid="field" />) VALUES (<include refid="property" />)
+	</insert>
+	<delete id="remove" parameterType="SRole">
+		DELETE FROM S_ROLE<include refid="idCnd" />
+	</delete>
+	<select id="get" resultType="SRole" parameterType="SRole">
+		SELECT<include refid="fieldAsProperty" />FROM S_ROLE<include refid="idCnd" />
+	</select>
+	<update id="update" parameterType="SRole">
+		UPDATE S_ROLE<set><include refid="fieldEqPropertyIf" /></set><include refid="idCnd" />
+	</update>
+	<update id="forceUpdate" parameterType="SRole">
+		UPDATE S_ROLE<set><include refid="fieldEqProperty" /></set><include refid="idCnd" />
+	</update>
+	<!-- ==================以上为单记录操作,以下为多记录操作================== -->
+	<delete id="removeSome" parameterType="SRole">
+		DELETE FROM S_ROLE<where>${condition}</where>
+	</delete>
+	<update id="updateSome" parameterType="SRole">
+		UPDATE S_ROLE<set>${updateSet}</set><where>${condition}</where>
+	</update>
+	<select id="selectMapList" resultType="map" parameterType="SRole">
+		SELECT<include refid="fieldAsProperty" />FROM S_ROLE<where>${condition}</where>
+	</select>
+	<select id="selectModelList" resultType="SRole" parameterType="SRole">
+		SELECT<include refid="fieldAsProperty" />FROM S_ROLE<where>${condition}</where>
+	</select>
+	
+	<sql id="idCnd">
+		<where>
+			<if test="roleId!=null" >ROLE_ID=#{roleId,jdbcType=INTEGER}</if>
+			<if test="roleId==null" >AND 1=0</if>
+		</where>
+	</sql>
+	<!-- ==================定制内容开始================== -->
+	
+	<!-- ==================定制内容结束================== -->
+</mapper>
